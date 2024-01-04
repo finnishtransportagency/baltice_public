@@ -1,0 +1,41 @@
+@tailwind base;
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  h3 {
+    @apply text-lg;
+  }
+  a {
+    @apply text-blue-600;
+  }
+  p { 
+    margin-bottom: 1em 
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --foreground-rgb: 16, 16, 16;
+    --background-rgb: 255, 255, 255;
+}
+
+/* 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-rgb: 0, 0, 0;
+    }
+}
+*/
+
+body {
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+}

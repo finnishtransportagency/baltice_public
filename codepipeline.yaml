@@ -448,7 +448,6 @@ Resources:
             Value: !Ref TestingImageRepository
           - Name: PROD_IMAGE_REPOSITORY
             Value: !Ref ProdImageRepository
-
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
@@ -483,7 +482,6 @@ Resources:
             Value: !Ref ProdImageRepository
           - Name: SONAR_TOKEN
             Value: !Ref SonarFrontendToken
-	    
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE

@@ -2,8 +2,10 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.12
+      nodejs: 18
     commands:
+      - echo Upgrading pip...
       - pip install --upgrade pip
       - pip install --upgrade awscli aws-sam-cli
       # Enable docker https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html
@@ -11,7 +13,12 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - echo "We will build here......"
+      - echo We will build here...
+      - export X=$(pwd)
+      - cd frontend_test_app/
+      - npm install
+      - npm run build
+      - cd $X
       #- sam build --use-container --template ${SAM_TEMPLATE}
       - ls
       - env
@@ -28,3 +35,4 @@ artifacts:
   files:
     - testing/pipeline/assume-role.sh
     - testing/pipeline/*
+    - frontend_test_app/.next/**/*

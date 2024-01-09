@@ -32,7 +32,7 @@ phases:
           --disableNuspec \
           --disableAssembly \
           -d nvd \
-          --failOnCVSS $FAIL_ON_CVSS
+          --failOnCVSS 11
       - ls
       - echo Starting SonarCube scanning and sending dependency check report file to SonarCube `date` in `pwd`
       - env

@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing OWASP Dependency-Check"
+      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.8/dependency-check-9.0.8-release.zip
+      - unzip dependency-check-*
+      - export PATH=dependency-check/bin:$PATH
+      - echo "Installing SonarCube scanner"
+      - export SONAR_SCANNER_VERSION=5.0.1.3006
+      - export SONAR_SCANNER_HOME=.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+      - curl --create-dirs -sSLo .sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+      - unzip -o .sonar/sonar-scanner.zip -d .sonar/
+      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+      - export SONAR_SCANNER_OPTS="-server"
+  build:
+    commands:
+      - echo "We will do here..."
+      - export X=$(pwd)
+      - cd frontend/
+      - npm install
+      - npm run build
+      - cd $X
+      - ls
+      - env
+      - testing/pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
+      - env
+ artifacts:
+  files:
+    - testing/pipeline/assume-role.sh

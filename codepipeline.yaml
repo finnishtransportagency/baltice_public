@@ -329,7 +329,7 @@ Resources:
                   - "codebuild:BatchGetBuilds"
                 Resource:
                   - !GetAtt CodeBuildProjectBuildAndPackage.Arn
-		  - !GetAtt CodeBuildSonarAndDependencyCheck.Arn
+                  - !GetAtt CodeBuildSonarAndDependencyCheck.Arn
                   - !Ref AWS::NoValue
               - Effect: Allow
                 Action:

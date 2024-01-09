@@ -21,7 +21,7 @@ phases:
       - export X=$(pwd)
       - cd frontend/
       - npm install
-      - npm run build
+      #- npm run build
       - cd $X
       - ls
       - env

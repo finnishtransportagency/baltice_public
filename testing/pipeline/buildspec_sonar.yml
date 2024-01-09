@@ -27,6 +27,6 @@ phases:
       - env
       - testing/pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
       - env
- artifacts:
+artifacts:
   files:
     - testing/pipeline/assume-role.sh

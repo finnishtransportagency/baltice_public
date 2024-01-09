@@ -23,10 +23,30 @@ phases:
       - npm install
       #- npm run build
       - cd $X
+      - mkdir -p nvd # Will store nvd here
+      - echo "Checking dependencies"
+      - |
+        dependency-check.sh \
+          -s frontend/node_modules \
+          -f ALL \
+          --disableNuspec \
+          --disableAssembly \
+          -d nvd \
+          --failOnCVSS $FAIL_ON_CVSS
       - ls
+      - echo Starting SonarCube scanning and sending dependency check report file to SonarCube `date` in `pwd`
       - env
-      - testing/pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
+      - sonar-scanner -Dsonar.projectKey=Baltice_frontend -Dsonar.exclusions=frontend/**/*.java,frontend/node_modules/**/*.* -Dsonar.sources=frontend/ -Dsonar.dependencyCheck.jsonReportPath=dependency-check-report.json -Dsonar.dependencyCheck.htmlReportPath=dependency-check-report.html  -Dsonar.host.url=https://sonarqube.vaylapilvi.fi
       - env
+      - ls -la
+
+# Caching the nvd database so each run doesn't download the
+# entire nvd
+cache:
+  paths:
+    - nvd/**/*
+
 artifacts:
   files:
+    - dependency-check-report*
     - testing/pipeline/assume-role.sh

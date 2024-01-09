@@ -15,7 +15,7 @@ phases:
     commands:
       - echo We will build here...
       - export X=$(pwd)
-      - cd frontend_test_app/
+      - cd frontend/
       - npm install
       - npm run build
       - cd $X

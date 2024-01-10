@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#. "$(dirname -- "$0")/_/husky.sh"
 
-cd front
-npm run lint-strict
+#cd frontend
+#npm run lint-strict

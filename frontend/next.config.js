@@ -15,6 +15,10 @@ module.exports = function(phase) {
                     source: `${process.env.NEXT_PUBLIC_MAP_SHIP_LAYER_URL}:slug*`,
                     destination: `${process.env.MAP_SHIP_LAYER_REDIRECT_URL}:slug*`,
                 },
+                {
+                    source: `${process.env.NEXT_PUBLIC_BALTICE_API_URL}:slug*`,
+                    destination: `${process.env.BALTICE_API_REDIRECT_URL}:slug*`,
+                },
             ];
         };
         return {

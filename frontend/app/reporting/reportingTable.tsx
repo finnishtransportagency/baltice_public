@@ -23,14 +23,13 @@ export default function ReportingTable({
 }: TableProps) {
   return (
     <div>
-      <h1 className="text-baltice-blue font-medium text-3xl">Reporting</h1>
-      <p className="text-baltice-blue pt-4 font-bold">{headerText}</p>
+      <p className="text-xl pt-4 font-normal">{headerText}</p>
       <div className="border-2">
         <table className="table-auto w-full">
           <thead>
-            <tr className={`text-left bg-${color}-300`}>
+            <tr className={`text-left text-sm bg-${color}-300 bg-baltice-gray`}>
               {columns.map((column) => (
-                <th className="p-4" key={column.id}>
+                <th className="p-3" key={column.id}>
                   {column.title}
                 </th>
               ))}
@@ -45,7 +44,7 @@ export default function ReportingTable({
                 {columns.map((column) => (
                   <td
                     key={column.id}
-                    className={`py-4 pl-2 ${
+                    className={`py-3 pl-2 text-sm w-1/3 ${
                       column.id === "title" ? "font-bold" : ""
                     }`}
                   >

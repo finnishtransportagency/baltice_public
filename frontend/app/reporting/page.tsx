@@ -1,5 +1,6 @@
 import TopSection from "../components/topSection/topSection";
 import ReportingTable from "./reportingTable";
+import Container from "../components/container/container";
 
 export default function Reporting() {
   const columns = [
@@ -37,7 +38,8 @@ export default function Reporting() {
     {
       title: "Special remark",
       finland:
-        "Vessels in the Gulf of Finland of 300 GT or more are required to report to the GOFREP Traffic Centre. A vessel stuck in ice must notify the icebreaker of its position without delay.",
+        "Vessels in the Gulf of Finland of 300 GT or more are required to report to the GOFREP Traffic Centre." +
+        "A vessel stuck in ice must notify the icebreaker of its position without delay.",
       sweden: "-",
     },
   ];
@@ -94,34 +96,36 @@ export default function Reporting() {
     },
   ];
   return (
-    <div>
+    <div className="bg-baltice-light-blue-background">
       <TopSection
         header="Reporting & Instructions"
-        description="Following information is updated for each winter navigation season,
-        unless otherwise mentioned. This information is covering the Baltic
-        Sea area. When icebreaking activity and traffic restrictions are off,
-        updated information is not available."
+        description="Following information is updated every day during the winter navigation season, 
+        unless otherwise mentioned. This information is covering the Baltic Sea area. 
+        When icebreaking activity and traffic restrictions are off, updated information is not available."
       />
-      <div className="max-w-1440 mx-auto mt-10 mb-16">
-        <ReportingTable
-          columns={columns}
-          data={data}
-          headerText="Passage reporting for ships destinated to Finnish and Swedish ports"
-          color="#0000"
-        />
-        <ReportingTable
-          columns={columns2}
-          data={data2}
-          headerText="Arrival report for ships in Swedish Ports"
-          color="#00000"
-        />
-        <ReportingTable
-          columns={columns2}
-          data={data3}
-          headerText="Departure report for ships in Swedish ports"
-          color="#FEFEFE"
-        />
-      </div>
+      <Container>
+        <div className="max-w-1440 mx-auto mt-10 mb-16">
+          <h1 className="font-medium text-2xl">Reporting</h1>
+          <ReportingTable
+            columns={columns}
+            data={data}
+            headerText="Passage reporting for ships destinated to Finnish and Swedish ports"
+            color="#0000"
+          />
+          <ReportingTable
+            columns={columns2}
+            data={data2}
+            headerText="Arrival report for ships in Swedish Ports"
+            color="#00000"
+          />
+          <ReportingTable
+            columns={columns2}
+            data={data3}
+            headerText="Departure report for ships in Swedish ports"
+            color="#FEFEFE"
+          />
+        </div>
+      </Container>
     </div>
   );
 }

@@ -17,6 +17,7 @@ const config: Config = {
         "baltice-blue": "#0165AF",
         "baltice-middle-blue": "#49C2F1",
         "baltice-light-blue": "#EEF9FF",
+        "baltice-light-blue-background": "#ECF8FD",
         "baltice-gray": "#FAFAFA",
       },
       colors: {
@@ -27,6 +28,9 @@ const config: Config = {
       },
       maxWidth: {
         "1440": "90rem",
+      },
+      fontSize: {
+        "4xl": "2rem",
       },
     },
   },

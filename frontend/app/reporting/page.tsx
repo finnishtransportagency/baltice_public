@@ -1,6 +1,7 @@
 import TopSection from "../components/topSection/topSection";
 import ReportingTable from "./reportingTable";
 import Container from "../components/container/container";
+import IceNavigation from "./iceNavigation";
 
 export default function Reporting() {
   const columns = [
@@ -126,6 +127,7 @@ export default function Reporting() {
           />
         </div>
       </Container>
+      <IceNavigation />
     </div>
   );
 }

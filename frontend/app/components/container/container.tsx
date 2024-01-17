@@ -1,9 +1,13 @@
 import React from "react";
 
-export default function Container({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="container p-6 mx-auto w-full max-w-1440 bg-white rounded shadow p-2">
-      {children}
-    </div>
-  );
+type ContainerProps = {
+  children: React.ReactNode;
+  className?: string;
+};
+
+export default function Container({ children, className }: ContainerProps) {
+  const containerClasses = `container p-6 mx-auto w-full max-w-1440 bg-white rounded shadow p-2 ${
+    className || ""
+  }`;
+  return <div className={containerClasses}>{children}</div>;
 }

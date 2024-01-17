@@ -6,10 +6,9 @@ Description: >
   - Source
   - UpdatePipeline
   - Build
-#
+
 # To deploy this template and connect to the main git branch, run this against the leading account:
 # `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`.
-#
 
 Parameters:
   GitHubOAuthToken:
@@ -17,6 +16,11 @@ Parameters:
     NoEcho: true
     Type: String
     Default: '{{resolve:secretsmanager:github-baltice:SecretString:github-balticetoken}}'
+  SonarFrontendToken:
+    Description: Token used by AWS CodePipeline to connect to Sonar Baltice_frontend
+    NoEcho: true
+    Type: String
+    Default: '{{resolve:secretsmanager:Sonar:SecretString:FRONT_SONAR_TOKEN}}'
   GitHubOwner:
     Description: GitHub username owning the repo
     Type: String
@@ -89,7 +93,7 @@ Resources:
   # |  __/| | |_) |  __| | | | | |  __/
   # |_|   |_| .__/ \___|_|_|_| |_|\___|
   #         |_|
-  Pipeline:
+  MyPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       ArtifactStore:
@@ -168,7 +172,38 @@ Resources:
                 - Name: SourceCodeAsZip
               OutputArtifacts:
                 - Name: BuildArtifactAsZip
+        - Name: SonarAndDependencyCheck
+          Actions:
+            - Name: CodeBuild
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName: !Ref CodeBuildSonarAndDependencyCheck
+              InputArtifacts:
+                - Name: SourceCodeAsZip
+              OutputArtifacts:
+                - Name: SonarArtifactAsZip
         - !Ref AWS::NoValue
+
+  NotificationRule:
+    Type: AWS::CodeStarNotifications::NotificationRule
+    Properties: 
+      DetailType: FULL
+      EventTypeIds:
+        - codepipeline-pipeline-pipeline-execution-succeeded
+        - codepipeline-pipeline-action-execution-failed
+        - codepipeline-pipeline-stage-execution-failed
+        - codepipeline-pipeline-pipeline-execution-failed
+        - codepipeline-pipeline-manual-approval-failed
+      Name: "PipelineNotificationRule"
+      Resource: !Sub "arn:${AWS::Partition}:codepipeline:${AWS::Region}:${AWS::AccountId}:${MyPipeline}"
+      Status: ENABLED
+      Targets: 
+        - TargetAddress: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:PipelineInfo"
+          TargetType: SNS
 
   PipelineArtifactsBucket:
     Type: AWS::S3::Bucket
@@ -294,6 +329,7 @@ Resources:
                   - "codebuild:BatchGetBuilds"
                 Resource:
                   - !GetAtt CodeBuildProjectBuildAndPackage.Arn
+                  - !GetAtt CodeBuildSonarAndDependencyCheck.Arn
                   - !Ref AWS::NoValue
               - Effect: Allow
                 Action:
@@ -394,7 +430,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
         PrivilegedMode: true
         EnvironmentVariables:
           - Name: TESTING_REGION
@@ -417,4 +453,38 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: testing/pipeline/buildspec_build_package.yml
+
+  CodeBuildSonarAndDependencyCheck:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: TESTING_REGION
+            Value: !Ref TestingRegion
+          - Name: PROD_REGION
+            Value: !Ref ProdRegion
+          - Name: TESTING_PIPELINE_EXECUTION_ROLE
+            Value: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-sam-cli-managed-test-pipe-PipelineExecutionRole-rau71ePysn3B"
+          - Name: PROD_PIPELINE_EXECUTION_ROLE
+            Value: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-sam-cli-managed-prod-pipe-PipelineExecutionRole-kxvzNJJM74aA"
+          - Name: TESTING_ARTIFACT_BUCKET
+            Value: !Ref TestingArtifactBucket
+          - Name: PROD_ARTIFACT_BUCKET
+            Value: !Ref ProdArtifactBucket
+          - Name: TESTING_IMAGE_REPOSITORY
+            Value: !Ref TestingImageRepository
+          - Name: PROD_IMAGE_REPOSITORY
+            Value: !Ref ProdImageRepository
+          - Name: SONAR_TOKEN
+            Value: !Ref SonarFrontendToken
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: testing/pipeline/buildspec_sonar.yml
 

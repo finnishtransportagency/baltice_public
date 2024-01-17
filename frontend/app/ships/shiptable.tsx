@@ -1,12 +1,15 @@
 "use client";
 
+import proj4 from "proj4"; 
+
 import Table from "../components/tables/table";
 import { useShips, ShipRow } from "../services/ships";
 import { formatLatitude, formatLongitude } from "../lib/util";
 
+
 export default function ShipTable() {
     const { ships, isError, isLoading } = useShips();
-    
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -19,18 +22,13 @@ export default function ShipTable() {
         { 
             id: "name", 
             title: "Ship" ,
-            resolver: (row: ShipRow) => {
-                return (
-                    `${row.name} (${row.callsign})`
-                );
-            }
         },
         { 
             id: "longitude", 
             title: "LON" ,
             resolver: (row: ShipRow) => {
                 return (
-                    formatLongitude(row.geoLocation.x)
+                    formatLatitude(proj4("EPSG:3857", "EPSG:4326", [row.x, row.y])[0])
                 );
             }
         },
@@ -39,14 +37,9 @@ export default function ShipTable() {
             title: "LAT",
             resolver: (row: ShipRow) => {
                 return (
-                    formatLatitude(row.geoLocation.y)
+                    formatLongitude(proj4("EPSG:3857", "EPSG:4326", [row.x, row.y])[1])
                 );
             }
-
-        },
-        { 
-            id: "comment", 
-            title: "Remarks",
         },
     ];
 
@@ -55,8 +48,9 @@ export default function ShipTable() {
     }
 
     return (
-        <div className="m-auto grid gap-8 mt-10 mb-16">
-            <Table columns={cols} rows={ships} headerText="Ships" />
+        <div className="max-w-1440 m-auto grid gap-8 mt-10 mb-16">
+            <h1 className="p-4 text-baltice-blue font-medium text-3xl">Ships</h1>
+            <Table borderColor="baltice-middle-blue" columns={cols} rows={ships} />
         </div>
     );
 }
